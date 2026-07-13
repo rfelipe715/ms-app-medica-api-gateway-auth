@@ -2,7 +2,7 @@ server:
   port: 8080
 
 jwt:
-  secret: "app-medica-duoc-2026"
+  secret: "app-medica-duoc-2026-app-medica-duoc-2026"
   expiration-minutes: 60
 
 spring:
@@ -15,16 +15,16 @@ spring:
         webflux:
           routes:
             - id: pacientes-bff
-              uri: http://localhost:8181
+              uri: ${PACIENTES_BFF_URI:http://localhost:8181}
               predicates:
                 - Path=/api/v1/pacientes/**
 
             - id: citas-bff
-              uri: http://localhost:8090
+              uri: ${CITAS_BFF_URI:http://localhost:8090}
               predicates:
                 - Path=/api/v1/citas/**
 
             - id: historial-bff
-              uri: http://localhost:9090
+              uri: ${HISTORIAL_BFF_URI:http://localhost:9090}
               predicates:
                 - Path=/api/v1/historiales/**
