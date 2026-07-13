@@ -5,6 +5,19 @@ jwt:
   secret: "app-medica-duoc-2026-app-medica-duoc-2026"
   expiration-minutes: 60
 
+springdoc:
+  swagger-ui:
+    urls-primary-name: Auth
+    urls:
+      - name: Auth
+        url: /v3/api-docs
+      - name: Pacientes
+        url: ${PACIENTES_DOCS_URL:http://localhost:8083/v3/api-docs}
+      - name: Citas
+        url: /citas-docs/v3/api-docs
+      - name: Historial
+        url: /historial-docs/v3/api-docs
+
 spring:
   application:
     name: ms-api-gateway
@@ -28,3 +41,17 @@ spring:
               uri: ${HISTORIAL_BFF_URI:http://localhost:9090}
               predicates:
                 - Path=/api/v1/historiales/**
+
+            - id: citas-docs
+              uri: ${CITAS_BFF_URI:http://localhost:8090}
+              predicates:
+                - Path=/citas-docs/**
+              filters:
+                - RewritePath=/citas-docs/(?<segment>.*), /${segment}
+
+            - id: historial-docs
+              uri: ${HISTORIAL_BFF_URI:http://localhost:9090}
+              predicates:
+                - Path=/historial-docs/**
+              filters:
+                - RewritePath=/historial-docs/(?<segment>.*), /${segment}
