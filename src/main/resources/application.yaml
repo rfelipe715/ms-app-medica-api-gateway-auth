@@ -2,7 +2,7 @@ server:
   port: 8080
 
 jwt:
-  secret: "notprofejuan-notprofejuan-notprofejuan-2026"
+  secret: "app-medica-duoc-2026"
   expiration-minutes: 60
 
 spring:
@@ -14,23 +14,17 @@ spring:
       server:
         webflux:
           routes:
-            - id: servicio-a
-              uri: http://localhost:8081
+            - id: pacientes-bff
+              uri: http://localhost:8181
               predicates:
-                - Path=/api/servicio-a/**
-              filters:
-                - StripPrefix=2
+                - Path=/api/v1/pacientes/**
 
-            - id: servicio-b
-              uri: http://localhost:8082
+            - id: citas-bff
+              uri: http://localhost:8090
               predicates:
-                - Path=/api/servicio-b/**
-              filters:
-                - StripPrefix=2
+                - Path=/api/v1/citas/**
 
-            - id: servicio-c
-              uri: http://localhost:8083
+            - id: historial-bff
+              uri: http://localhost:9090
               predicates:
-                - Path=/api/servicio-c/**
-              filters:
-                - StripPrefix=2
+                - Path=/api/v1/historiales/**

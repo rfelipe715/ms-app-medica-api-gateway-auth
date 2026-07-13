@@ -1,10 +1,11 @@
-package cl.notprofejuan.app.service;
+package cl.duoc.app.service;
 
-import cl.notprofejuan.app.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
+
+import cl.duoc.app.config.JwtProperties;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -17,15 +18,15 @@ public class JwtService {
 
     private final JwtProperties jwtProperties;
 
-    public JwtService(JwtProperties jwtProperties){
+    public JwtService(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
     }
 
-    private SecretKey getSigningKey(){
+    private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username){
+    public String generateToken(String username) {
         Instant now = Instant.now();
 
         return Jwts.builder().subject(username).claim("roles", List.of("USER"))
@@ -34,7 +35,7 @@ public class JwtService {
                 .compact();
     }
 
-    public Claims validateToken(String token){
+    public Claims validateToken(String token) {
         return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token)
                 .getPayload();
     }

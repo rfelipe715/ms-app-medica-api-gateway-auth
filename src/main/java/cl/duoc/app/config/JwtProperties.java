@@ -1,7 +1,7 @@
-package cl.notprofejuan.app.config;
+package cl.duoc.app.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "jwt")
-public record JwtProperties(String secret, Long expirationMinutes)  {
+public record JwtProperties(String secret, Long expirationMinutes) {
 }

@@ -1,7 +1,5 @@
-package cl.notprofejuan.app.filter;
+package cl.duoc.app.filter;
 
-
-import cl.notprofejuan.app.service.JwtService;
 import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -10,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+
+import cl.duoc.app.service.JwtService;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -17,7 +17,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
     private final JwtService jwtService;
 
-    public JwtAuthenticationFilter(JwtService jwtService){
+    public JwtAuthenticationFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 
@@ -25,18 +25,18 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
 
-        if(path.startsWith("/auth")){
+        if (path.startsWith("/auth")) {
             return chain.filter(exchange);
         }
 
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
-        String token =  authHeader.substring(7);
+        String token = authHeader.substring(7);
 
         try {
             Claims claims = jwtService.validateToken(token);
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             exchange = exchange.mutate().request(builder -> builder.header("X-User", username)).build();
             return chain.filter(exchange);
 
-        } catch(Exception e){
+        } catch (Exception e) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
