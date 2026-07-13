@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+jwt:
+  secret: "notprofejuan-notprofejuan-notprofejuan-2026"
+  expiration-minutes: 60
+
+spring:
+  application:
+    name: ms-api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: servicio-a
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/servicio-a/**
+              filters:
+                - StripPrefix=2
+
+            - id: servicio-b
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/servicio-b/**
+              filters:
+                - StripPrefix=2
+
+            - id: servicio-c
+              uri: http://localhost:8083
+              predicates:
+                - Path=/api/servicio-c/**
+              filters:
+                - StripPrefix=2
