@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.duoc.app.model.dto.LoginRequestDTO;
 import cl.duoc.app.service.JwtService;
 
 import java.util.Map;
@@ -30,10 +31,10 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Credenciales inválidas")
     })
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody Map<String, String> request) {
+    public Map<String, String> login(@RequestBody LoginRequestDTO request) {
 
-        String username = request.get("username");
-        String password = request.get("password");
+        String username = request.getUsername();
+        String password = request.getPassword();
 
         if (!"admin".equals(username) || !"1234".equals(password)) {
             throw new RuntimeException("Credenciales inválidas");
