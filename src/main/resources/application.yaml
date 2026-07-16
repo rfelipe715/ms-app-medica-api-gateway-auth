@@ -12,7 +12,7 @@ springdoc:
       - name: Auth
         url: /v3/api-docs
       - name: Pacientes
-        url: ${PACIENTES_DOCS_URL:http://localhost:8083/v3/api-docs}
+        url: /pacientes-docs/v3/api-docs
       - name: Citas
         url: /citas-docs/v3/api-docs
       - name: Historial
@@ -41,6 +41,13 @@ spring:
               uri: ${HISTORIAL_BFF_URI:http://localhost:9090}
               predicates:
                 - Path=/api/v1/historiales/**
+
+            - id: pacientes-docs
+              uri: ${PACIENTES_BFF_URI:http://localhost:8181}
+              predicates:
+                - Path=/pacientes-docs/**
+              filters:
+                - RewritePath=/pacientes-docs/(?<segment>.*), /${segment}
 
             - id: citas-docs
               uri: ${CITAS_BFF_URI:http://localhost:8090}
