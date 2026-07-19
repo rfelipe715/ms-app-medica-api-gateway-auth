@@ -1,6 +1,8 @@
 package cl.duoc.app.filter;
 
 import io.jsonwebtoken.Claims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -14,6 +16,8 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtService jwtService;
 
@@ -38,6 +42,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.warn("Petición rechazada a '{}': falta el header Authorization Bearer", path);
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -47,10 +52,12 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         try {
             Claims claims = jwtService.validateToken(token);
             String username = claims.getSubject();
+            log.debug("Token válido para el usuario '{}' en '{}'", username, path);
             exchange = exchange.mutate().request(builder -> builder.header("X-User", username)).build();
             return chain.filter(exchange);
 
         } catch (Exception e) {
+            log.warn("Token inválido o expirado para la petición a '{}': {}", path, e.getMessage());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }

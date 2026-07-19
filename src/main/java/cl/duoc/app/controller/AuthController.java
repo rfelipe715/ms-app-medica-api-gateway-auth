@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,8 @@ import java.util.Map;
 @RequestMapping("/auth")
 @Tag(name = "Auth", description = "Autenticación y generación de tokens JWT para usar en las demás APIs")
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private final JwtService jwtService;
 
@@ -37,9 +41,11 @@ public class AuthController {
         String password = request.getPassword();
 
         if (!"admin".equals(username) || !"1234".equals(password)) {
+            log.warn("Intento de login fallido para el usuario '{}'", username);
             throw new RuntimeException("Credenciales inválidas");
         }
         String token = jwtService.generateToken(username);
+        log.info("Login exitoso para el usuario '{}'", username);
         return Map.of("token", token);
     }
 
